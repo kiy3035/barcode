@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바코드 스캐너</title>
+</head>
+<body>
+    <!-- 바코드 스캐너 시작 버튼 -->
+    <button id="startScannerBtn">바코드 스캐너 시작</button>
+
+    <!-- 비디오 피드를 표시할 영역 -->
+    <div style="cursor: pointer;">
+        <video id="scanner-container" width="100%" height="100%" style="object-fit: cover;"></video>
+    </div>
+
+    <!-- JavaScript 코드 -->
+    <script src="/instascan.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let scanner = null; // 스캐너 객체 초기화
+
+            // 바코드 스캐너 시작 버튼 클릭 이벤트 핸들러
+            document.getElementById('startScannerBtn').addEventListener('click', function () {
+                if (scanner === null) {
+                    // getUserMedia로 카메라에 접근
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                        .then(function (stream) {
+                            const video = document.getElementById('scanner-container');
+
+                            // instascan 객체 생성
+                            scanner = new Instascan.Scanner({
+                                video: video,
+                                formats: ['CODE128'] // 바코드 종류 추가
+                            });
+
+                            // 바코드가 스캔되면 호출될 콜백 함수
+                            scanner.addListener('scan', function (content) {
+                                debugger
+                                alert('바코드 스캔 결과: ' + content);
+                            });
+
+                            // 비디오에 스트림 할당
+                            video.srcObject = stream;
+
+                            // play 호출
+                            video.play();
+                        })
+                        .catch(function (error) {
+                            console.error('카메라 액세스 오류:', error);
+                        });
+                } else {
+                    alert('바코드 스캐너가 이미 실행 중입니다.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

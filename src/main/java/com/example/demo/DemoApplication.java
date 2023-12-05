@@ -16,7 +16,7 @@ public class DemoApplication {
     public static class TestController {
         @GetMapping("/")
         public String testPage() {
-            return "test.html";
+            return "index.html";
         }
     }
 }
