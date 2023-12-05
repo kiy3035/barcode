@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quagga 바코드 테스트</title>
+    <style>
+        #interactive.viewport video {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Barcode Scanner</h1>
+
+    <button type="button" onclick="showBarcode();">Barcode On</button>
+    <span id="resultBarcode"> 결과값 : </span>
+
+    <div id="interactive" class="viewport"></div>
+    <div id="output" class="viewport"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/quagga"></script>
+    <script>
+        function showBarcode() {
+            if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+                // 사용자 미디어(카메라) 접근 권한 요청
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+                    var App = {
+                        init: function () {
+                            Quagga.init(this.state, function (err) {
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                                Quagga.start();
+                            });
+                        },
+                        state: {
+                            inputStream: {
+                                type: 'LiveStream',
+                                constraints: {
+                                    width: 640,
+                                    height: 480,
+                                    facingMode: 'environment' // 뒷면 카메라 사용
+                                }
+                            },
+                            locator: {
+                                patchSize: 'medium',
+                                halfSample: false
+                            },
+                            numOfWorkers: 4,
+                            decoder: {
+                                readers: ['code_128_reader']
+                            },
+                            locate: true
+                        },
+                        lastResult: null
+                    };
+
+                    Quagga.onDetected(function (result) {
+                        var code = result.codeResult.code;
+                        if (App.lastResult !== code) {
+                            App.lastResult = code;
+                            var output = document.getElementById('output');
+                            output.innerHTML = 'Scanned Barcode: ' + code;
+                        }
+                        document.getElementById('resultBarcode').innerHTML = code;
+                    });
+
+                    Quagga.onProcessed(function (result) {
+                        var drawingCtx = Quagga.canvas.ctx.overlay,
+                            drawingCanvas = Quagga.canvas.dom.overlay;
+
+                        if (result) {
+                            if (result.boxes) {
+                                drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute('width')), parseInt(drawingCanvas.getAttribute('height')));
+                                result.boxes.filter(function (box) {
+                                    return box !== result.box;
+                                }).forEach(function (box) {
+                                    Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, { color: 'green', lineWidth: 2 });
+                                });
+                            }
+
+                            if (result.box) {
+                                Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, { color: 'blue', lineWidth: 2 });
+                            }
+
+                            if (result.codeResult && result.codeResult.code) {
+                                Quagga.ImageDebug.drawPath(result.line, { x: 'vertical', y: 0 }, drawingCtx, { color: 'red', lineWidth: 3 });
+                            }
+                        }
+                    });
+
+                    App.init();
+                }).catch(function (err) {
+                    console.error('Error accessing camera:', err);
+                });
+            } else {
+                console.error('getUserMedia not supported');
+            }
+        }
+    </script>
+
+</body>
+</html>
