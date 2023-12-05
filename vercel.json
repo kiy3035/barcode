@@ -1,5 +1,24 @@
 {
-    "rewrites":  [
+    "builds": [
+      {
+        "src": "static",
+        "use": "@vercel/static-build",
+        "config": {
+          "output": "public"
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/$1"
+      }
+    ],
+    "rewrites": [
       {"source": "/(.*)", "destination": "/"}
-    ]
+    ],
+    "env": {
+      "PORT": "8002"
+    }
   }
+  
