@@ -1,17 +1,11 @@
 {
     "builds": [
       {
-        "src": "static",
+        "src": "src/main/resources/static",
         "use": "@vercel/static-build",
         "config": {
           "output": "public"
         }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/$1"
       }
     ],
     "rewrites": [
