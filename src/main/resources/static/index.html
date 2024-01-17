@@ -15,8 +15,19 @@
 
 
 <script>
+
+  // 현재 웹페이지의 URL 가져오기
+  const currentUrl = window.location.href;
+
+  // ngrok 주소 동적으로 생성
+  const ngrokUrl = currentUrl.replace(/\/[^\/]*$/, '/');
+
+  // ngrok 주소 출력 또는 활용
+  console.log('Ngrok URL:', ngrokUrl);
+
   
-  const url = 'https://83c4-103-129-187-91.ngrok-free.app/'
+  // const url = 'https://83c4-103-129-187-91.ngrok-free.app/'
+  const url = ngrokUrl;
 
   function moveUrl(value) {
 

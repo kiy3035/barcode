@@ -2,10 +2,10 @@ version: '3' # 최신버전
 
 services:
   web:
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    image: kiy3035/aaaa:hi3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: compose1
     ports:
       - "8007:8002"
       
