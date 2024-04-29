@@ -1,0 +1,5 @@
+서버 실행 						- start.sh
+서버 정상 작동 체크 				- health.sh
+현재 동작중인 서버체크 				- profile.sh
+예전 서버 정지 					- stop_old_one.sh
+웹서버에서 신규로 올라온 서버로 전환 	- switch.sh
